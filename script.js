@@ -88,3 +88,17 @@ const displayMovement = function(movements) {
     });
 };
 displayMovement(movements);
+
+
+const cat = [2, 5, 76, 4, 5]
+const dog = [2, 3, 4, 65, 32]
+
+const temp = cat.slice()
+console.log(temp);
+
+// map method
+
+const newCat = cat.map(function(mov) {
+    return mov + 3;
+})
+console.log(newCat)
