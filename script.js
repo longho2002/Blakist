@@ -116,3 +116,18 @@ const creatUserName = function (accs) {
 
 creatUserName(accounts);
 console.log(accounts);
+
+// filter
+const deposit = movements.filter(function (mov) {
+  return mov > 0;
+});
+
+console.log(deposit);
+//reduce method
+
+const calcDisplayBalane = function (movements) {
+  const calcPrice = movements.reduce((acc, cur, i, arr) => acc + cur, 0);
+  labelBalance.textContent = `${calcPrice} EUR`;
+};
+
+calcDisplayBalane(movements);
