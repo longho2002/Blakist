@@ -88,4 +88,3 @@ const displayMovement = function(movements) {
     });
 };
 displayMovement(movements);
-const j = 0;
