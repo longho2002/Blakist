@@ -6,31 +6,31 @@
 
 // Data
 const account1 = {
-    owner: 'Jonas Schmedtmann',
-    movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-    interestRate: 1.2, // %
-    pin: 1111,
+  owner: 'Jonas Schmedtmann',
+  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  interestRate: 1.2, // %
+  pin: 1111,
 };
 
 const account2 = {
-    owner: 'Jessica Davis',
-    movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-    interestRate: 1.5,
-    pin: 2222,
+  owner: 'Jessica Davis',
+  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+  interestRate: 1.5,
+  pin: 2222,
 };
 
 const account3 = {
-    owner: 'Steven Thomas Williams',
-    movements: [200, -200, 340, -300, -20, 50, 400, -460],
-    interestRate: 0.7,
-    pin: 3333,
+  owner: 'Steven Thomas Williams',
+  movements: [200, -200, 340, -300, -20, 50, 400, -460],
+  interestRate: 0.7,
+  pin: 3333,
 };
 
 const account4 = {
-    owner: 'Sarah Smith',
-    movements: [430, 1000, 700, 50, 90],
-    interestRate: 1,
-    pin: 4444,
+  owner: 'Sarah Smith',
+  movements: [430, 1000, 700, 50, 90],
+  interestRate: 1,
+  pin: 4444,
 };
 
 const accounts = [account1, account2, account3, account4];
@@ -66,28 +66,27 @@ const inputClosePin = document.querySelector('.form__input--pin');
 // LECTURES
 
 const currencies = new Map([
-    ['USD', 'United States dollar'],
-    ['EUR', 'Euro'],
-    ['GBP', 'Pound sterling'],
+  ['USD', 'United States dollar'],
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
 ]);
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-const displayMovement = function(movements) {
-    containerMovements.innerHTML = '';
-    movements.forEach(function(mov, i) {
-        const type = mov > 1 ? 'deposit' : 'withdrawal';
-        const html = `<div class="movements__row">
+const displayMovement = function (movements) {
+  containerMovements.innerHTML = '';
+  movements.forEach(function (mov, i) {
+    const type = mov > 1 ? 'deposit' : 'withdrawal';
+    const html = `<div class="movements__row">
     <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
     <div class="movements__date">3 days ago</div>
     <div class="movements__value">${mov}</div>
   </div>`;
-        containerMovements.insertAdjacentHTML('afterbegin', html);
-    });
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
 };
-displayMovement(movements);
 
 const cat = [2, 5, 76, 4, 5];
 const dog = [2, 3, 4, 65, 32];
@@ -97,50 +96,90 @@ console.log(temp);
 
 // map method
 
-const newCat = cat.map(function(mov) {
-    return mov + 3;
+const newCat = cat.map(function (mov) {
+  return mov + 3;
 });
 console.log(newCat);
 
-const creatUserName = function(accs) {
-    accs.forEach(function(acc) {
-        acc.username = acc.owner
-            .toLowerCase()
-            .split(' ')
-            .map(function(mov) {
-                return mov[0];
-            })
-            .join('');
-    });
+const creatUserName = function (accs) {
+  accs.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(function (mov) {
+        return mov[0];
+      })
+      .join('');
+  });
 };
 
-creatUserName(accounts);
 console.log(accounts);
 
 // filter
-const deposit = movements.filter(function(mov) {
-    return mov > 0;
+const deposit = movements.filter(function (mov) {
+  return mov > 0;
 });
 
 console.log(deposit);
 //reduce method
 
-const calcDisplayBalane = function(movements) {
-    const calcPrice = movements.reduce((acc, cur, i, arr) => acc + cur, 0);
-    labelBalance.textContent = `${calcPrice} EUR`;
+const calcDisplayBalane = function (movements) {
+  const calcPrice = movements.reduce((acc, cur, i, arr) => acc + cur, 0);
+  labelBalance.textContent = `${calcPrice} EUR`;
 };
 
-calcDisplayBalane(movements);
+const displaySummary = function (acc) {
+  const sumin = acc.movements
+    .filter(function (mov) {
+      return mov > 0;
+    })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  const sumout = acc.movements
+    .filter(function (mov) {
+      return mov < 0;
+    })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  const suminterest = acc.movements
+    .filter(function (mov) {
+      return mov > 0;
+    })
+    .map(function (mov) {
+      return (mov * acc.interestRate) / 100;
+    })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  console.log(sumin, sumout);
+  labelSumIn.textContent = `${sumin} €`;
+  labelSumOut.textContent = `${Math.abs(sumout)} €`;
+  labelSumInterest.textContent = `${suminterest} €`;
+};
 
+let currentAccount;
+creatUserName(accounts);
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
 
-const displaySummary = function(movements) {
-    const sumin = movements.filter(function(mov) { return mov > 0 }).reduce(function(acc, cur) { return acc + cur }, 0);
-    const sumout = movements.filter(function(mov) { return mov < 0 }).reduce(function(acc, cur, ) { return acc + cur }, 0);
-    const suminterest = movements.filter(function(mov) { return mov > 0 }).map(function(mov) { return mov * 1.2 / 100 }).reduce(function(acc, cur, ) { return acc + cur }, 0);
-    console.log(sumin, sumout);
-    labelSumIn.textContent = `${sumin} €`;
-    labelSumOut.textContent = `${Math.abs(sumout)} €`;
-    labelSumInterest.textContent = `${suminterest} €`;
-}
-
-displaySummary(account1.movements)
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `welcome back ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    inputLoginPin.value = inputLoginUsername.value = '';
+    inputLoginPin.blur();
+    containerApp.style.opacity = 100;
+    displaySummary(currentAccount);
+    calcDisplayBalane(currentAccount.movements);
+    displayMovement(currentAccount.movements);
+  } else {
+    containerApp.style.opacity = 0;
+    alert('Wrong!');
+  }
+});
