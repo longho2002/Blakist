@@ -64,84 +64,140 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////	
 /////////////////////////////////////////////////	
-// LECTURES	
+// LECTURES
 
-const currencies = new Map([	
-    ['USD', 'United States dollar'],	
-    ['EUR', 'Euro'],	
-    ['GBP', 'Pound sterling'],	
-]);	
+const currencies = new Map([
+  ['USD', 'United States dollar'],
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
+]);
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];	
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-/////////////////////////////////////////////////	
+/////////////////////////////////////////////////
 
-const displayMovement = function(movements) {	
-    containerMovements.innerHTML = '';	
-    movements.forEach(function(mov, i) {	
-        const type = mov > 1 ? 'deposit' : 'withdrawal';	
-        const html = `<div class="movements__row">	
-    <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>	
-    <div class="movements__date">3 days ago</div>	
-    <div class="movements__value">${mov}</div>	
-  </div>`;	
-        containerMovements.insertAdjacentHTML('afterbegin', html);	
-    });	
-};	
-displayMovement(movements);	
+const displayMovement = function(movements) {
+  containerMovements.innerHTML = '';
+  movements.forEach(function(mov, i) {
+      const type = mov > 1 ? 'deposit' : 'withdrawal';
+      const html = `<div class="movements__row">
+  <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+  <div class="movements__date">3 days ago</div>
+  <div class="movements__value">${mov}</div>
+</div>`;
+      containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
 
-const cat = [2, 5, 76, 4, 5];	
-const dog = [2, 3, 4, 65, 32];	
-
-const temp = cat.slice();	
-console.log(temp);	
-
-// map method	
-
-const newCat = cat.map(function(mov) {	
-    return mov + 3;	
-});	
-console.log(newCat);	
-
-const creatUserName = function(accs) {	
-    accs.forEach(function(acc) {	
-        acc.username = acc.owner	
-            .toLowerCase()	
-            .split(' ')	
-            .map(function(mov) {	
-                return mov[0];	
-            })	
-            .join('');	
-    });	
-};	
-
-creatUserName(accounts);	
-console.log(accounts);	
-
-// filter	
-const deposit = movements.filter(function(mov) {	
-    return mov > 0;	
-});	
-
-console.log(deposit);	
-//reduce method	
-
-const calcDisplayBalane = function(movements) {	
-    const calcPrice = movements.reduce((acc, cur, i, arr) => acc + cur, 0);	
-    labelBalance.textContent = `${calcPrice} EUR`;	
-};	
-
-calcDisplayBalane(movements);	
+const cat = [2, 5, 76, 4, 5];
 
 
-const displaySummary = function(movements) {	
-    const sumin = movements?.filter(function(mov) { return mov > 0 }).reduce(function(acc, cur) { return acc + cur }, 0);	
-    const sumout = movements.filter(function(mov) { return mov < 0 }).reduce(function(acc, cur, ) { return acc + cur }, 0);	
-    const suminterest = movements.filter(function(mov) { return mov > 0 }).map(function(mov) { return mov * 1.2 / 100 }).reduce(function(acc, cur, ) { return acc + cur }, 0);	
-    console.log(sumin, sumout);	
-    labelSumIn.textContent = `${sumin} €`;	
-    labelSumOut.textContent = `${Math.abs(sumout)} €`;	
-    labelSumInterest.textContent = `${suminterest} €`;	
-}	
+// map method
 
-displaySummary(account1.movements) 	
+const newCat = cat.map(function(mov) {
+  return mov + 3;
+});
+console.log(newCat);
+
+const creatUserName = function(accs) {
+  accs.forEach(function(acc) {
+      acc.username = acc.owner
+          .toLowerCase()
+          .split(' ')
+          .map(function(mov) {
+              return mov[0];
+          })
+          .join('');
+  });
+};
+
+console.log(accounts);
+
+// filter
+const deposit = movements.filter(function(mov) {
+  return mov > 0;
+});
+
+console.log(deposit);
+//reduce method
+
+const calcDisplayBalane = function(acc) {
+  acc.balance = acc.movements.reduce((acc, cur, i, arr) => acc + cur, 0);
+  labelBalance.textContent = `${acc.balance} €`;
+};
+
+const displaySummary = function(acc) {
+  const sumin = acc.movements
+      .filter(function(mov) {
+          return mov > 0;
+      })
+      .reduce(function(acc, cur) {
+          return acc + cur;
+      }, 0);
+  const sumout = acc.movements
+      .filter(function(mov) {
+          return mov < 0;
+      })
+      .reduce(function(acc, cur) {
+          return acc + cur;
+      }, 0);
+  const suminterest = acc.movements
+      .filter(function(mov) {
+          return mov > 0;
+      })
+      .map(function(mov) {
+          return (mov * acc.interestRate) / 100;
+      })
+      .reduce(function(acc, cur) {
+          return acc + cur;
+      }, 0);
+  console.log(sumin, sumout);
+  labelSumIn.textContent = `${sumin} €`;
+  labelSumOut.textContent = `${Math.abs(sumout)} €`;
+  labelSumInterest.textContent = `${suminterest} €`;
+};
+
+
+const updateUI = function(acc) {
+  displaySummary(acc);
+  calcDisplayBalane(acc);
+  displayMovement(acc.movements);
+}
+let currentAccount;
+creatUserName(accounts);
+btnLogin.addEventListener('click', function(e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+      acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+      labelWelcome.textContent = `welcome back ${
+    currentAccount.owner.split(' ')[0]
+  }`;
+      inputLoginPin.value = inputLoginUsername.value = '';
+      inputLoginPin.blur();
+      containerApp.style.opacity = 100;
+      updateUI(currentAccount);
+  } else {
+      containerApp.style.opacity = 0;
+      alert('Wrong!');
+  }
+});
+
+btnTransfer.addEventListener('click', function(e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const activeAcc = accounts.find(acc => acc.username === inputTransferTo.value)
+
+  console.log(amount, activeAcc);
+  console.log(currentAccount.balance);
+  if (currentAccount.balance >= amount && amount > 0 && activeAcc && activeAcc?.username !== currentAccount.username) {
+      activeAcc.movements.push(amount);
+      console.log(activeAcc.movements);
+      currentAccount.movements.push(-amount);
+      inputTransferTo.value = inputTransferAmount.value = ``;
+      inputTransferAmount.blur();
+      updateUI(currentAccount);
+  }
+})
