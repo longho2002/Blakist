@@ -204,9 +204,7 @@ btnTransfer.addEventListener('click', function(e) {
 
 btnLoan.addEventListener('click', function(e) {
   e.preventDefault();
-  console.log('amount');
   const amount = Number(inputLoanAmount.value);
-  console.log(amount);
   if (amount >= 0 && currentAccount.movements.some(mov => mov >= amount*0.1) ){
     currentAccount.movements.push(amount);
     inputLoanAmount.value = ``;
@@ -224,3 +222,8 @@ btnClose.addEventListener('click', function(e) {
     containerApp.style.opacity = 0;
   }
 })
+
+// SOME Array method
+console.log(movements.some(mov => mov >= 0));
+// EVERY Array method
+console.log(movements.every(mov => mov >= 0));
