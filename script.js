@@ -227,3 +227,14 @@ btnClose.addEventListener('click', function(e) {
 console.log(movements.some(mov => mov >= 0));
 // EVERY Array method
 console.log(movements.every(mov => mov >= 0));
+
+
+// flat and flatMap
+
+const arr = [200,[543,324],454,12];
+console.log(arr.flat());
+const arr1 = [[200,[543,324]],454,12];
+console.log(arr1.flat(1));
+
+console.log(accounts.map(mov => mov.movements).flat().reduce((acc,value) => acc + value, 0))
+console.log(accounts.flatMap(mov => mov.movements).reduce((acc,value) => acc + value, 0))
