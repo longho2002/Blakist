@@ -76,9 +76,12 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-const displayMovement = function(movements) {
+const displayMovement = function(movements, sorted = false) {
   containerMovements.innerHTML = '';
-  movements.forEach(function(mov, i) {
+
+  const movs = sorted ? movements.slice().sort((a,b) => a - b) : movements;
+
+  movs.forEach(function(mov, i) {
       const type = mov > 1 ? 'deposit' : 'withdrawal';
       const html = `<div class="movements__row">
   <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
@@ -223,6 +226,13 @@ btnClose.addEventListener('click', function(e) {
   }
 })
 
+let flag = false;
+btnSort.addEventListener('click', function(e) {
+  e.preventDefault();
+  displayMovement(currentAccount.movements, !flag);
+  flag = !flag;
+})
+
 // SOME Array method
 console.log(movements.some(mov => mov >= 0));
 // EVERY Array method
@@ -238,3 +248,5 @@ console.log(arr1.flat(1));
 
 console.log(accounts.map(mov => mov.movements).flat().reduce((acc,value) => acc + value, 0))
 console.log(accounts.flatMap(mov => mov.movements).reduce((acc,value) => acc + value, 0))
+
+console.log(movements.slice().sort((a,b) => a - b));
